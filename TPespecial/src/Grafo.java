@@ -160,7 +160,7 @@ public class Grafo {
 						kilometros);
 				r.getDestino().setColor("amarillo");
 			}
-			aerolineasDisponibles.remove(r.disponibleSinAerolinea(aerolinea));
+			aerolineasDisponibles.removeAll(r.disponibleSinAerolinea(aerolinea));
 			caminosDisponibles.remove(r.getDestino());
 			kilometros -= r.getKm();
 		}
