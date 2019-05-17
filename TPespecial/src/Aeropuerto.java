@@ -13,6 +13,7 @@ public class Aeropuerto {
 		this.ciudad = ciudad;
 		this.nombre = nombre;
 		this.pais = pais;
+		this.color = "blanco";      //blanco: sin visitar ------ negro: visitado
 		this.vecinos = new ArrayList<Ruta>();
 		
 	}
@@ -26,7 +27,7 @@ public class Aeropuerto {
 	public String getCiudad() {
 		return this.ciudad;
 	}
-	
+
 	
 	
 	
@@ -52,4 +53,7 @@ public class Aeropuerto {
 		return (this.nombre == otro.getNombre())&&(this.ciudad==otro.getCiudad());
 	}
 	
+	public ArrayList<Ruta> getVecinos() {
+		return vecinos;
+	}
 }

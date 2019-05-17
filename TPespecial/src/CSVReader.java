@@ -82,7 +82,9 @@ public class CSVReader {
                 
                 String[] asientos = aerolineasA[i].split("-");
                 r.addAerolinea(asientos[0], Integer.parseInt(asientos[1]));
+                r.addNombreAerolinea(asientos[0]);
                 rVuelta.addAerolinea(asientos[0], Integer.parseInt(asientos[1]));
+                rVuelta.addNombreAerolinea(asientos[0]);
                 Reserva reservaExistente = g.getReserva(asientos[0], origen, destino);
                 if(reservaExistente!=null) {
                 	r.addReserva(asientos[0], reservaExistente.getReservados());
