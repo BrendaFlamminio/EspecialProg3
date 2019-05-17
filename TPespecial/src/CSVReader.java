@@ -6,7 +6,7 @@ import java.util.ArrayList;
 public class CSVReader {
 
     public static void leerAeropuertos(Grafo g) {
-        String csvFile = "[PATH-AL-ARCHIVO]/dataset.csv";
+        String csvFile = "C:/TUDAI-ws/TPespecial/src/Datasets/Aeropuertos.csv";
         String line = "";
         String cvsSplitBy = ";";
 
@@ -30,7 +30,7 @@ public class CSVReader {
     
     public static void leerReservas(Grafo g) {
     
-        String csvFile = "[PATH-AL-ARCHIVO]/dataset.csv";
+        String csvFile = "C:/TUDAI-ws/TPespecial/src/Datasets/Reservas.csv";
         String line = "";
         String cvsSplitBy = ";";
 
@@ -60,7 +60,7 @@ public class CSVReader {
     
     public static void leerRutas(Grafo g) {
         
-        String csvFile = "[PATH-AL-ARCHIVO]/dataset.csv";
+        String csvFile = "C:/TUDAI-ws/TPespecial/src/Datasets/Rutas.csvv";
         String line = "";
         String cvsSplitBy = ";";
 

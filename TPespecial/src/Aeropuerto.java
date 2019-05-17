@@ -31,7 +31,7 @@ public class Aeropuerto {
 	
 	
 	
-	// itera cada arista de la lista vecinos, y le pregunta si hay existe una ruta directa entre estos dos nodos.
+	// itera cada arista de la lista vecinos, y le pregunta si existe una ruta directa entre estos dos nodos.
 	public Ruta hasVecino(Aeropuerto n) {
 		for(Ruta v: vecinos) {
 			if (v.contiene(this, n))
