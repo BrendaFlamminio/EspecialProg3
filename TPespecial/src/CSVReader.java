@@ -60,7 +60,7 @@ public class CSVReader {
     
     public static void leerRutas(Grafo g) {
         
-        String csvFile = "C:/TUDAI-ws/TPespecial/src/Datasets/Rutas.csvv";
+        String csvFile = "C:/TUDAI-ws/TPespecial/src/Datasets/Rutas.csv";
         String line = "";
         String cvsSplitBy = ";";
 

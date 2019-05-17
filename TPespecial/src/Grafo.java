@@ -7,6 +7,18 @@ public class Grafo {
 	public Grafo() {
 		aeropuertos = new ArrayList<Aeropuerto>();
 	}
+	
+	public void mostrarAeropuertos() {
+		for(Aeropuerto a: aeropuertos) {
+			System.out.println(a.getNombre());
+		}
+	}
+	
+	public void mostrarReservas() {
+		for(Reserva a: reservas) {
+			System.out.println(a.getAerolinea()+ " : " + a.getReservados());
+		}
+	}
 
 	public void addAeropuerto(Aeropuerto a) {
 		aeropuertos.add(a);
@@ -78,13 +90,13 @@ public class Grafo {
 
 // siguiente funcion busca todos los vuelos entre dos aeropuertos sin utilizar una aerolinea determinada	
 
-	public void nose(Aeropuerto origen, Aeropuerto destino, String aerolinea) {
+	public void servicio2prueba(Aeropuerto origen, Aeropuerto destino, String aerolinea) {
 		ArrayList<Ruta> rutasDisponibles = new ArrayList<Ruta>();
 		
-		nose2(origen, destino, aerolinea, rutasDisponibles);
+		servicio2caminos(origen, destino, aerolinea, rutasDisponibles);
 	}
 
-	public void nose2(Aeropuerto origen, Aeropuerto destino, String aerolinea,
+	public void servicio2caminos(Aeropuerto origen, Aeropuerto destino, String aerolinea,
 			ArrayList<Ruta> rutasDisponibles) {
 		for (Ruta r : origen.getVecinos()) {
 			if (r.haySinAerolinea(aerolinea)) {
@@ -94,7 +106,7 @@ public class Grafo {
 					mostrarVuelos(rutasDisponibles, aerolinea); // modificarlo al directo ya que puede que haya vuelos con escala
 				} else if (r.getDestino() != origen) {
 					rutasDisponibles.add(r);
-					nose2(r.getDestino(), destino, aerolinea, rutasDisponibles);
+					servicio2caminos(r.getDestino(), destino, aerolinea, rutasDisponibles);
 				}
 
 			}
