@@ -2,9 +2,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Ruta {
-	private HashMap<String, Integer> aerolineas;
-	private HashMap<String, Integer> reservas;
-	private ArrayList<String> nombresAerolineas;
+	private HashMap<String, Integer> aerolineas = new HashMap<String, Integer>();
+	private HashMap<String, Integer> reservas = new HashMap<String, Integer>();
+	private ArrayList<String> nombresAerolineas = new ArrayList<String>();
 	private Aeropuerto origen;
 	private Aeropuerto destino;
 	private float kilometros;

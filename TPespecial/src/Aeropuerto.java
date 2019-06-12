@@ -50,7 +50,7 @@ public class Aeropuerto {
 		this.color = c;
 	}
 	public boolean equals(Aeropuerto otro) {
-		return (this.nombre == otro.getNombre())&&(this.ciudad==otro.getCiudad());
+		return ((this.nombre.equals(otro.getNombre()))&&(this.ciudad.equals(otro.getCiudad())));
 	}
 	
 	public ArrayList<Ruta> getVecinos() {
