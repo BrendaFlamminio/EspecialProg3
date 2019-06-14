@@ -9,16 +9,22 @@ public class Grafo {
 		aeropuertos = new ArrayList<Aeropuerto>();
 	}
 
-	public void mostrarAeropuertos() {
+	public ArrayList<String> mostrarAeropuertos() {
+		ArrayList<String> mostrar = new ArrayList<String>();
 		for (Aeropuerto a : aeropuertos) {
-			System.out.println(a.getNombre());
+			mostrar.add(a.getNombre());
 		}
+		return mostrar;
 	}
 
-	public void mostrarReservas() {
+	public  ArrayList<String> mostrarReservas() {
+		ArrayList<String> mostrar = new ArrayList<String>();
 		for (Reserva a : reservas) {
-			System.out.println(a.getAerolinea() + " : " + a.getReservados());
+			mostrar.add(a.getAerolinea() + " : " + a.getReservados() + " de " + a.getOrigen().getNombre() + " a "
+					+ a.getDestino().getNombre());
 		}
+		return mostrar;
+
 	}
 
 	public void addAeropuerto(Aeropuerto a) {
@@ -70,27 +76,32 @@ public class Grafo {
 
 	}
 
-	public void serivicio1(Aeropuerto o, Aeropuerto d, String aerolinea) {
+	public ArrayList<String> serivicio1(Aeropuerto o, Aeropuerto d, String aerolinea) {
+		ArrayList<String> mostrar = new ArrayList<String>();
 		Ruta ruta = existeDirecto(o, d);
+		String dato;
 		if (ruta != null) {
 			float kilometros = ruta.getKm();
 			int asientosDisponibles = existeAerolinea(ruta, aerolinea);
-			if (asientosDisponibles > 0) {
-				System.out.println("Existe vuelo directo entre " + o.getNombre() + " y " + d.getNombre() + " de "
-						+ kilometros + " kilometros, con " + asientosDisponibles + " asientos disponibles");
-			} else if (asientosDisponibles == 0) {
-				System.out.println("No hay asientos disponibles en dicha aerolinea para este vuelo directo");
-			} else {
-				System.out.println("No existe dicha aerolinea en este vuelo directo");
-			}
-		} else {
-			System.out.println("No existe vuelo directo");
-		}
+			if (asientosDisponibles > 0)
+
+				dato = "Existe vuelo directo entre " + o.getNombre() + " y " + d.getNombre() + " de " + kilometros
+						+ " kilometros, con " + asientosDisponibles + " asientos disponibles";
+			else if (asientosDisponibles == 0)
+				dato = "No hay asientos disponibles en dicha aerolinea para este vuelo directo";
+			else
+				dato = "No existe dicha aerolinea en este vuelo directo";
+
+		} else
+			dato = "No existe vuelo directo";
+		mostrar.add(dato);
+		return mostrar;
 	}
 
 // siguiente funcion busca todos los vuelos entre dos aeropuertos sin utilizar una aerolinea determinada	
 
-	public void dfs(Aeropuerto origen, Aeropuerto destino, String aerolinea) {
+	public ArrayList<ArrayList<String>> dfs(Aeropuerto origen, Aeropuerto destino, String aerolinea) {
+		ArrayList<ArrayList<String>> mostrar = new ArrayList<ArrayList<String>>();
 		ArrayList<Ruta> rutaDisponible = new ArrayList<Ruta>();
 		// int kilometros = 0;
 		for (Aeropuerto a : aeropuertos) {
@@ -98,22 +109,40 @@ public class Grafo {
 		}
 		origen.setColor("amarillo");
 		dfsVisit(origen, destino, rutaDisponible, aerolinea);
-		imprimirCaminos(origen, destino);
+		mostrar = imprimirCaminos(origen, destino, aerolinea);
+		return mostrar;
 
 	}
 
-	public void imprimirCaminos(Aeropuerto o, Aeropuerto d) {
-		System.out.println("Caminos disponibles");
+	public ArrayList<ArrayList<String>> imprimirCaminos(Aeropuerto o, Aeropuerto d, String aerolinea) {
+		ArrayList<ArrayList<String>> mostrar = new ArrayList<ArrayList<String>>();
+		ArrayList<String> agregar = new ArrayList<String>();
+		int contador = -1;
+		double kilometros = 0;
 
 		for (ArrayList<Ruta> ar : posiblesCaminos) {
-			System.out.println(o.getNombre() + " - ");
+
+			agregar.add(o.getNombre() + " - ");
 			for (Ruta r : ar) {
-				System.out.print(r.getOrigen().getNombre() + " - " + r.getDestino().getNombre());
-				System.out.println(" ");
+				agregar.add(r.getOrigen().getNombre() + " - " + r.getDestino().getNombre()
+						+ "   -  Aerolineas disponibles:  ");
+				contador++;
+				kilometros += r.getKm();
+				for (String ae : r.disponibleSinAerolinea(aerolinea)) {
+					agregar.add(" - " + ae);
+				}
+				
+
 			}
-			// System.out.println(d.getNombre()+ " - ");
-			System.out.println(" OTRO CAMINO ");
+
+			agregar.add("El vuelo es de "+contador+" estalas y de "+kilometros+" kilometros");
+			contador = 0;
+			kilometros = 0;
+
+			mostrar.add((ArrayList<String>) agregar.clone());
+			agregar.clear();
 		}
+		return mostrar;
 	}
 
 	public void dfsVisit(Aeropuerto origen, Aeropuerto destino, ArrayList<Ruta> rutaDisponible, String aerolinea) {
@@ -124,13 +153,13 @@ public class Grafo {
 
 			for (Ruta ru : origen.getVecinos()) {
 				if (ru.getDestino().getColor() == "blanco") {
-					if(ru.haySinAerolinea(aerolinea)){
-					rutaDisponible.add(ru);
-					ru.getDestino().setColor("amarillo");
-					dfsVisit(ru.getDestino(), destino, rutaDisponible, aerolinea);
-					ru.getDestino().setColor("blanco");
-					rutaDisponible.remove(ru);
-				}
+					if (ru.haySinAerolinea(aerolinea)) {
+						rutaDisponible.add(ru);
+						ru.getDestino().setColor("amarillo");
+						dfsVisit(ru.getDestino(), destino, rutaDisponible, aerolinea);
+						ru.getDestino().setColor("blanco");
+						rutaDisponible.remove(ru);
+					}
 				}
 			}
 
@@ -138,71 +167,11 @@ public class Grafo {
 
 	}
 
-	/*
-	 * public void servicio2caminos(Aeropuerto origen, Aeropuerto destino, String
-	 * aerolinea, ArrayList<Ruta> rutaDisponible) {
-	 * 
-	 * for (Ruta r : origen.getVecinos()) { if (r.haySinAerolinea(aerolinea)) {
-	 * 
-	 * if (r.getDestino().equals(destino)) { rutaDisponible.add(r);
-	 * mostrarVuelos(rutaDisponible, aerolinea); // modificarlo al directo ya que
-	 * puede que haya vuelos con escala } else if (r.getDestino() != origen) {
-	 * rutaDisponible.add(r); servicio2caminos(r.getDestino(), destino, aerolinea,
-	 * rutaDisponible); }
-	 * 
-	 * } }
-	 * 
-	 * } public void mostrarVuelos(ArrayList<Ruta> rutaDisponible, String aerolinea)
-	 * { int escalas = 0; int kilometros = 0; for(Ruta r: rutaDisponible) { escalas=
-	 * escalas++; kilometros += r.getKm();
-	 * System.out.println("Las aerolineas disponibles para ir desde " +
-	 * r.getOrigen().getNombre() + " hasta " + r.getDestino().getNombre() +
-	 * " son:"); for(String a: r.disponibleSinAerolinea(aerolinea)) {
-	 * System.out.println(a); } } System.out.println("El numero de escalas es : " +
-	 * escalas); System.out.println("La cantidad de kilometros a recorrer es: " +
-	 * kilometros);
-	 * 
-	 * }
-	 * 
-	 * public void VuelosDisponibles(Aeropuerto origen, Aeropuerto destino, String
-	 * aerolinea) { ArrayList<Aeropuerto> caminosDisponibles = new
-	 * ArrayList<Aeropuerto>(); ArrayList<String> aerolineasDisponibles = new
-	 * ArrayList<String>(); int kilometros = 0; for (Aeropuerto a : aeropuertos) {
-	 * a.setColor("amarillo"); } datosCaminos(origen, destino, aerolinea,
-	 * caminosDisponibles, aerolineasDisponibles, kilometros);
-	 * 
-	 * }
-	 * 
-	 * public int datosCaminos(Aeropuerto origen, Aeropuerto destino, String
-	 * aerolinea, ArrayList<Aeropuerto> caminosDisponibles, ArrayList<String>
-	 * aerolineasDisponibles, int kilometros) {
-	 * 
-	 * for (Ruta r : origen.getVecinos()) { if (r.haySinAerolinea(aerolinea)) {
-	 * caminosDisponibles.add(origen);
-	 * aerolineasDisponibles.addAll(r.disponibleSinAerolinea(aerolinea)); kilometros
-	 * += r.getKm(); } if (r.getDestino().equals(destino)) {
-	 * caminosDisponibles.add(destino); int escalas = caminosDisponibles.size() - 1;
-	 * mostrarVuelos(escalas, aerolineasDisponibles, kilometros);
-	 * caminosDisponibles.remove(r.getDestino()); } else if
-	 * (r.getDestino().getColor().equals("amarillo")) {
-	 * r.getDestino().setColor("negro"); kilometros = datosCaminos(r.getDestino(),
-	 * destino, aerolinea, caminosDisponibles, aerolineasDisponibles, kilometros);
-	 * r.getDestino().setColor("amarillo"); }
-	 * aerolineasDisponibles.removeAll(r.disponibleSinAerolinea(aerolinea));
-	 * caminosDisponibles.remove(r.getDestino()); kilometros -= r.getKm(); } return
-	 * kilometros; }
-	 */
-	public void mostrarVuelos(int escalas, ArrayList<String> aerolineasDisponibles, int kilometros) {
-		System.out.println();
-		System.out.println("La cantidad de escalas a realizar es de " + escalas);
-		System.out.println("Las aerolienas disponibles son:");
-		for (String a : aerolineasDisponibles) {
-			System.out.println(a);
-		}
-		System.out.println("Los kilometros a recorrer son: " + kilometros);
-	}
 
-	public void servicio3(String paisO, String paisD) {
+	public ArrayList<ArrayList<String>> servicio3(String paisO, String paisD) {
+		ArrayList<ArrayList<String>> mostrar = new ArrayList<ArrayList<String>>();
+		ArrayList<String> agregar = new ArrayList<String>();
+
 		ArrayList<Aeropuerto> aeropuertosO = new ArrayList<Aeropuerto>();
 		ArrayList<Aeropuerto> aeropuertosD = new ArrayList<Aeropuerto>();
 		ArrayList<Ruta> rutaDisponible = new ArrayList<Ruta>();
@@ -222,19 +191,32 @@ public class Grafo {
 				}
 			}
 		}
-		mostrarVuelos(rutaDisponible);
+		if (rutaDisponible.isEmpty()) {
+			agregar.add("No existen vuelos directos entre " + paisO + " y " + paisD);
+			mostrar.add((ArrayList<String>) agregar.clone());
+			
+		} else
+			mostrar = mostrarVuelos(rutaDisponible);
+		return mostrar;
 	}
 
-	public void mostrarVuelos(ArrayList<Ruta> rutas) {
+	public ArrayList<ArrayList<String>> mostrarVuelos(ArrayList<Ruta> rutas) {
+		ArrayList<ArrayList<String>> mostrar = new ArrayList<ArrayList<String>>();
+		ArrayList<String> agregar = new ArrayList<String>();
+
 		for (Ruta r : rutas) {
-			System.out.println("Vuelo disponible encontrado");
-			System.out.println("Desde " + r.getOrigen().getNombre() + " hacia " + r.getDestino().getNombre());
-			System.out.println("Los kilometros a recorrer son: " + r.getKm());
-			System.out.println("Las aerolineas disponibles para este vuelo son:");
+			agregar.add("Vuelo disponible encontrado");
+			agregar.add("Desde " + r.getOrigen().getNombre() + " hacia " + r.getDestino().getNombre());
+			agregar.add("Los kilometros a recorrer son: " + r.getKm());
+			agregar.add("Las aerolineas disponibles para este vuelo son:");
 			for (String aerolineas : r.asientosDisponibles()) {
-				System.out.println(aerolineas);
+				agregar.add(aerolineas);
 			}
+			mostrar.add((ArrayList<String>) agregar.clone());
+			agregar.clear();
+
 		}
+		return mostrar;
 	}
 
 }
