@@ -17,7 +17,7 @@ public class Grafo {
 		return mostrar;
 	}
 
-	public  ArrayList<String> mostrarReservas() {
+	public ArrayList<String> mostrarReservas() {
 		ArrayList<String> mostrar = new ArrayList<String>();
 		for (Reserva a : reservas) {
 			mostrar.add(a.getAerolinea() + " : " + a.getReservados() + " de " + a.getOrigen().getNombre() + " a "
@@ -131,11 +131,10 @@ public class Grafo {
 				for (String ae : r.disponibleSinAerolinea(aerolinea)) {
 					agregar.add(" - " + ae);
 				}
-				
 
 			}
 
-			agregar.add("El vuelo es de "+contador+" estalas y de "+kilometros+" kilometros");
+			agregar.add("El vuelo es de " + contador + " estalas y de " + kilometros + " kilometros");
 			contador = 0;
 			kilometros = 0;
 
@@ -167,7 +166,6 @@ public class Grafo {
 
 	}
 
-
 	public ArrayList<ArrayList<String>> servicio3(String paisO, String paisD) {
 		ArrayList<ArrayList<String>> mostrar = new ArrayList<ArrayList<String>>();
 		ArrayList<String> agregar = new ArrayList<String>();
@@ -194,7 +192,7 @@ public class Grafo {
 		if (rutaDisponible.isEmpty()) {
 			agregar.add("No existen vuelos directos entre " + paisO + " y " + paisD);
 			mostrar.add((ArrayList<String>) agregar.clone());
-			
+
 		} else
 			mostrar = mostrarVuelos(rutaDisponible);
 		return mostrar;
@@ -219,4 +217,116 @@ public class Grafo {
 		return mostrar;
 	}
 
+	public ArrayList<Ruta> recorrerAeropuertosGreedy(Aeropuerto o) {
+		for (Aeropuerto ae : this.aeropuertos) {
+			ae.setColor("blanco");
+		}
+
+		ArrayList<Ruta> camino = recorrerAeropuertosGreedy2(o, o);
+		for (Aeropuerto ae : aeropuertos) {
+			if (ae.getColor() == "blanco") {
+				camino.clear();
+				return camino;
+			}
+		}
+		if (camino.get(camino.size() - 1).getDestino().hasVecino(o) != null)
+			return camino;
+		else {
+			camino.clear();
+			return camino;
+		}
+
+	}
+
+	public ArrayList<Ruta> recorrerAeropuertosGreedy2(Aeropuerto o, Aeropuerto a) {
+		a.setColor("amarillo");
+		ArrayList<Ruta> camino = new ArrayList<Ruta>();
+		Ruta menorKm = null;
+		double menor = 0;
+
+		for (Ruta r : a.getVecinos()) {
+			if (!r.getDestino().equals(o)) {
+
+				if (r.getDestino().getColor() != "amarillo") {
+					if (r.getKm() < menor || menor == 0) {
+						menor = r.getKm();
+						menorKm = r;
+					}
+				}
+			}
+
+		}
+
+		if (menorKm != null) {
+			camino.add(menorKm);
+
+			camino.addAll(recorrerAeropuertosGreedy2(o, menorKm.getDestino()));
+		}
+
+		return camino;
+	}
+
+	public void recorrerBacktraking(Aeropuerto origen) {
+		for (Aeropuerto ae : aeropuertos) {
+			ae.setColor("blanco");
+		}
+		double kilometros =0;
+		double menorKm=0;
+		ArrayList<Ruta> camino = new ArrayList<Ruta>();
+		recorrerB(origen, origen, camino);
+		camino = null;
+		if(!posiblesCaminos.isEmpty()) {
+		for(ArrayList<Ruta> ar: posiblesCaminos) {
+			
+			for(Ruta r: ar) {
+				kilometros += r.getKm();
+			}
+			if(kilometros<menorKm||menorKm==0)
+				camino = ar;
+		}
+		for(Ruta rsolucion: camino) {
+			System.out.println(rsolucion.getOrigen().getNombre()+"  -  "+rsolucion.getDestino().getNombre());
+		}
+	}
+		else
+			System.out.println("No existe solucion");
+	}
+
+	public void recorrerB(Aeropuerto o, Aeropuerto actual, ArrayList<Ruta> camino) {
+		actual.setColor("amarillo");
+		if (todosVisitados()) {
+			if (actual.hasVecino(o) != null)
+				posiblesCaminos.add((ArrayList<Ruta>) camino.clone());
+		} else {
+			
+			for (Ruta r : actual.getVecinos()) {
+				if (!r.getDestino().equals(o)) {
+					if (r.getDestino().getColor() == "blanco") {
+						camino.add(r);
+						recorrerB(o, r.getDestino(), camino);
+						r.getDestino().setColor("blanco");
+						camino.remove(r);
+					}
+				}
+			}
+		}
+
+	}
+
+	public boolean todosVisitados() {
+		for (Aeropuerto a : aeropuertos) {
+			if (a.getColor() == "blanco")
+				return false;
+		}
+		return true;
+	}
+	public void imprimirPosiblesCaminos() {
+		for(ArrayList<Ruta> ar: posiblesCaminos) {
+			System.out.println("CAMINO DISPONIBLE");
+			System.out.println(" ");
+			for(Ruta r: ar) {
+				System.out.println(r.getOrigen().getNombre()+"  -  "+r.getDestino().getNombre());
+			}
+		}
+	}
 }

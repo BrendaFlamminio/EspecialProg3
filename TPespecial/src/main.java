@@ -14,8 +14,9 @@ public class main {
 		CSVReader archivo = new CSVReader();
 
 		archivo.leerAeropuertos(grafo);
-		archivo.leerReservas(grafo);
+	
 		archivo.leerRutas(grafo);
+	
 		 
 		String origen;
 		String destino;
@@ -28,8 +29,13 @@ public class main {
 		BufferedReader entrada = new BufferedReader(new InputStreamReader(System.in));
 		try {
 			
+			System.out.println("Ingrese Aeropuerto origen: ");
+			origen = new String(entrada.readLine());
+			o = grafo.getAeropuerto(origen);
+			grafo.recorrerBacktraking(o);	
+			grafo.imprimirPosiblesCaminos();
 	
-			imprimir(grafo.mostrarAeropuertos(), "mostrarAeropuertos");
+		/*	imprimir(grafo.mostrarAeropuertos(), "mostrarAeropuertos");
 		
 		
 			imprimir(grafo.mostrarReservas(), "mostrarReservas");
@@ -68,14 +74,14 @@ public class main {
 
 			
 			//PRUEBA RAPIDA
-			/*o = grafo.getAeropuerto("John F. Kennedy");
+			o = grafo.getAeropuerto("John F. Kennedy");
 
 			d = grafo.getAeropuerto("Ministro Pistarini");
 			aerolinea = "LATAM";
 			grafo.dfs(o, d, aerolinea);
 
 			grafo.serivicio1(o, d, aerolinea);
-			grafo.servicio3("CHI", "ARG");*/
+			grafo.servicio3("CHI", "ARG");
 			
 			
 			
@@ -92,7 +98,7 @@ public class main {
 			
 							
 			imprimirServicio(grafo.servicio3(paisO, paisD), "servicio3");
-			
+			*/
 			
 	
 			
